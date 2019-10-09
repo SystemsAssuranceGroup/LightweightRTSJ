@@ -1,0 +1,48 @@
+@namespace(uri="http://www.sag.org/rtsj/mm", prefix="rtsj")
+package RTSJ;
+
+abstract class NamedElement {
+	attr String className;
+	attr String objectName;
+}
+
+abstract class RTElement extends NamedElement{
+	attr int priority; 
+	attr int cost; 
+	attr int deadline; 
+}
+
+class RTPackage extends NamedElement {
+    val RTElement[*] rtElement;
+}
+
+abstract class Thread extends RTElement{
+    ref RTElement[*] rtElement;
+}
+
+class RTPeriodicThread extends Thread {
+	attr int period;
+}
+
+class RTAperiodicThread extends Thread {
+}
+
+class ExternalHappening extends NamedElement {
+
+}
+
+abstract class AsyncEvent extends NamedElement {
+    ref AsyncEventHandler[1]#event handler; 
+    ref ExternalHappening[1..*] externalHappening;  
+}
+
+abstract class AsyncEventHandler extends RTElement {
+    ref AsyncEvent[*]#handler event;
+}
+
+class AsyncEventExtension extends AsyncEvent {
+}
+
+class AsyncEventHandlerExtension extends AsyncEventHandler {
+}
+

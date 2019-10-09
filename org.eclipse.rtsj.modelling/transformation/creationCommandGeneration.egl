@@ -1,0 +1,46 @@
+[%
+var className = self.className;
+var ePackageName = self.eContainer().name;
+%]
+package [%=ePackageName%];
+
+import javax.realtime.AsyncEventHandler
+
+
+public class [%=className%] extends AsyncEventHandler {
+
+	public static final String priority = [%=self.priority%];
+	public static final String cost = [%=self.cost%];
+	public static final String deadline = [%=self.deadline%];
+	public static final String name = [%=self.objectName%];
+	protected Runnalbe logic = null;
+	
+	public [%=className%](Runnable logic, AyncEventHandler deadlineMissHandler) 
+	{
+		PriorityParameters priority_parameters = new PriorityParameters(priority);
+		AperiodicParameters release_parameters = new AperiodicParameters(new RelativeTime(cost, 0), 
+													new RelativeTime(deadline, 0), 
+													deadlineMissHandler);
+		super(priority_parameters, release_parameters, null, null, null, false);
+		this.setName(name);
+		this.logic = logic;
+	}
+	
+	public [%=className%](String name, int priority, int cost, int deadline, Runnable logic, AyncEventHandler deadlineMissHandler) 
+	{
+		PriorityParameters priority_parameters = new PriorityParameters(priority);
+		AperiodicParameters release_parameters = new AperiodicParameters(new RelativeTime(cost, 0), 
+													new RelativeTime(deadline, 0), 
+													deadlineMissHandler);
+		super(priority_parameters, release_parameters, null, null, null, false);
+		this.setName(name);
+		this.logic = logic;
+	}
+
+	@Override
+	protected void handleAsyncEvent() {
+		logic.run();
+	}
+	
+}
+
